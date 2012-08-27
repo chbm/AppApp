@@ -349,6 +349,9 @@
     NSMutableString *text = [postTextView.text mutableCopy];
     [text insertString:@"@" atIndex:inputRange.location];
     postTextView.text = text;
+    inputRange.location += 1;
+    inputRange.length = 0;
+    [postTextView setSelectedRange:inputRange];
     currentCapture = [@"@" mutableCopy];
     currentCaptureType = ANReferencedEntityTypeUsername;
 
@@ -368,6 +371,7 @@
 
 - (void)suggestionAction:(UIButton *)button
 {
+    NSRange newSelectedRange = (NSRange){.location = 0, .length = 0};
     NSRange inputRange = [postTextView selectedRange];
     NSMutableString *text = [postTextView.text mutableCopy];
     ReferencedEntity *suggestion = currentSuggestions[button.tag];
@@ -375,20 +379,27 @@
 
     if(currentCaptureRange.location != NSNotFound && inputRange.length > 0)
     {
+        newSelectedRange = (NSRange){.location = inputRange.location + [title length], 0};
         [text replaceCharactersInRange:inputRange withString:title];
     }
     else if(currentCaptureRange.location != NSNotFound && inputRange.length == 0)
     {
+        newSelectedRange = (NSRange){.location = inputRange.location - [currentCapture length] + [title length], 0};
         [text replaceCharactersInRange:NSMakeRange(inputRange.location - [currentCapture length], [currentCapture length]) withString:@""];
         [text replaceCharactersInRange:currentCaptureRange withString:title];
     }
     else
     {
-        NSString *stringToInsert = [title stringByReplacingOccurrencesOfString:currentCapture withString:@""];
-        [text insertString:stringToInsert atIndex:inputRange.location];
+        NSRange newRange = (NSRange){.location = inputRange.location - [currentCapture length], .length = [currentCapture length] };
+        newSelectedRange = (NSRange){.location = newRange.location + [title length], 0};
+        [text replaceCharactersInRange:newRange withString:title];
+//        NSString *stringToInsert = [title stringByReplacingOccurrencesOfString:currentCapture withString:@""];
+//        [text insertString:stringToInsert atIndex:inputRange.location];
     }
     postTextView.text = text;
+    [postTextView setSelectedRange:newSelectedRange];
     currentCapture = nil;
+    currentCaptureRange = NSMakeRange(NSNotFound, 0);
 
     [UIView animateWithDuration:0.35f animations:^{
         CGRect frame = self.suggestionView.frame;
@@ -459,7 +470,10 @@
         firstCharacter = text;
 
     if([currentCapture length] == 0)
+    {
         currentCapture = nil;
+        currentCaptureRange = NSMakeRange(NSNotFound, 0);
+    }
 
     if(currentCapture == nil && ([firstCharacter isEqualToString:@"@"] || [firstCharacter isEqualToString:@"#"]))
     {
@@ -467,7 +481,9 @@
         currentCapture = [NSMutableString string];
         currentCaptureType = [firstCharacter isEqualToString:@"@"] ? ANReferencedEntityTypeUsername : ANReferencedEntityTypeHashtag;
         if(range.length > 0)
+        {
             currentCapture = nil;
+        }
         else
         {
             currentCaptureRange = range;
