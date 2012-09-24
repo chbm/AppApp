@@ -26,7 +26,7 @@
 
 @synthesize specifierDict=_specifierDict;
 @synthesize multipleValuesDict=_multipleValuesDict;
-@synthesize settingsReader = _settingsReader;
+@synthesize settingsReader;// = _settingsReader;
 
 - (id)initWithSpecifier:(NSDictionary*)specifier {
     if ((self = [super init])) {
@@ -41,19 +41,17 @@
 }
 
 - (void)dealloc {
-    [_specifierDict release], _specifierDict = nil;
-    [_multipleValuesDict release], _multipleValuesDict = nil;
+    _specifierDict = nil;
+    _multipleValuesDict = nil;
 	
 	_settingsReader = nil;
-
-    [super dealloc];
 }
 
 - (void)_reinterpretValues:(NSDictionary*)specifierDict {
     NSArray *values = [_specifierDict objectForKey:kIASKValues];
     NSArray *titles = [_specifierDict objectForKey:kIASKTitles];
     
-    NSMutableDictionary *multipleValuesDict = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableDictionary *multipleValuesDict = [[NSMutableDictionary alloc] init];
     
     if (values) {
 		[multipleValuesDict setObject:values forKey:kIASKValues];
@@ -237,35 +235,4 @@
     return UITextAutocorrectionTypeDefault;
 }
 
-- (UIImage *)cellImage
-{
-    return [UIImage imageNamed:[_specifierDict objectForKey:kIASKCellImage]];
-}
-
-- (UIImage *)highlightedCellImage
-{
-    return [UIImage imageNamed:[[_specifierDict objectForKey:kIASKCellImage ] stringByAppendingString:@"Highlighted"]];
-}
-
-- (BOOL)adjustsFontSizeToFitWidth {
-	NSNumber *boxedResult = [_specifierDict objectForKey:kIASKAdjustsFontSizeToFitWidth];
-	return !boxedResult || [boxedResult boolValue];
-}
-
-- (UITextAlignment)textAlignment
-{
-    if ([[_specifierDict objectForKey:kIASKTextLabelAlignment] isEqualToString:kIASKTextLabelAlignmentLeft]) {
-        return UITextAlignmentLeft;
-    } else if ([[_specifierDict objectForKey:kIASKTextLabelAlignment] isEqualToString:kIASKTextLabelAlignmentCenter]) {
-        return UITextAlignmentCenter;
-    } else if ([[_specifierDict objectForKey:kIASKTextLabelAlignment] isEqualToString:kIASKTextLabelAlignmentRight]) {
-        return UITextAlignmentRight;
-    }
-    if ([self.type isEqualToString:kIASKButtonSpecifier] && !self.cellImage) {
-		return UITextAlignmentCenter;
-	} else if ([self.type isEqualToString:kIASKPSMultiValueSpecifier] || [self.type isEqualToString:kIASKPSTitleValueSpecifier]) {
-		return UITextAlignmentRight;
-	}
-	return UITextAlignmentLeft;
-}
 @end

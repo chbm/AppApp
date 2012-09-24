@@ -53,8 +53,7 @@
                           error:(NSError*)error;
 
 #pragma mark - respond to button taps
-- (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForKey:(NSString*)key __attribute__((deprecated)); // use the method below with specifier instead
-- (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForSpecifier:(IASKSpecifier*)specifier;
+- (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForKey:(NSString*)key;
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender tableView:(UITableView *)tableView didSelectCustomViewSpecifier:(IASKSpecifier*)specifier;
 @end
 
@@ -83,6 +82,6 @@
 @property (nonatomic, retain) NSSet *hiddenKeys;
 
 - (void)synchronizeSettings;
-- (void)dismiss:(id)sender;
+- (IBAction)dismiss:(id)sender;
 - (void)setHiddenKeys:(NSSet*)hiddenKeys animated:(BOOL)animated;
 @end

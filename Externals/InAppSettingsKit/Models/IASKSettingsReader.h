@@ -17,8 +17,6 @@
 #import <Foundation/Foundation.h>
 
 #define kIASKPreferenceSpecifiers             @"PreferenceSpecifiers"
-#define kIASKCellImage                        @"IASKCellImage"
-
 #define kIASKType                             @"Type"
 #define kIASKTitle                            @"Title"
 #define kIASKFooterText                       @"FooterText"
@@ -61,11 +59,6 @@
 #define kIASKAutoCorrYes                      @"Yes"
 #define kIASKMinimumValueImage                @"MinimumValueImage"
 #define kIASKMaximumValueImage                @"MaximumValueImage"
-#define kIASKAdjustsFontSizeToFitWidth        @"IASKAdjustsFontSizeToFitWidth"
-#define kIASKTextLabelAlignment               @"IASKTextAlignment"
-#define kIASKTextLabelAlignmentLeft           @"IASKUITextAlignmentLeft"
-#define kIASKTextLabelAlignmentCenter         @"IASKUITextAlignmentCenter"
-#define kIASKTextLabelAlignmentRight          @"IASKUITextAlignmentRight"
 
 #define kIASKPSGroupSpecifier                 @"PSGroupSpecifier"
 #define kIASKPSToggleSwitchSpecifier          @"PSToggleSwitchSpecifier"
@@ -95,7 +88,6 @@
 #define kIASKTableWidth                       320
 #define kIASKSpacing                          5
 #define kIASKMinLabelWidth                    97
-#define kIASKMaxLabelWidth                    240
 #define kIASKMinValueWidth                    35
 #define kIASKPaddingLeft                      9
 #define kIASKPaddingRight                     10
@@ -104,8 +96,6 @@
 
 #define kIASKLabelFontSize                    17
 #define kIASKgrayBlueColor                    [UIColor colorWithRed:0.318 green:0.4 blue:0.569 alpha:1.0]
-
-#define kIASKMinimumFontSize                  12.0f
 
 #ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 #define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32

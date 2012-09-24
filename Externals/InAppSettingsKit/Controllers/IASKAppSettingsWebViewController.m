@@ -22,35 +22,25 @@
 @synthesize webView;
 
 - (id)initWithFile:(NSString*)urlString key:(NSString*)key {
-    self = [super init];
-    if (self) {
-        self.url = [NSURL URLWithString:urlString];
-        if (!self.url || ![self.url scheme]) {
-            NSString *path = [[NSBundle mainBundle] pathForResource:[urlString stringByDeletingPathExtension] ofType:[urlString pathExtension]];
-            if(path)
-                self.url = [NSURL fileURLWithPath:path];
-            else
-                self.url = nil;
-        }
-    }
-    return self;
+	if (!(self = [super initWithNibName:nil bundle:nil])) {
+		return nil;
+	}
+	
+	self.url = [NSURL URLWithString:urlString];
+	if (!self.url || ![self.url scheme]) {
+		NSString *path = [[NSBundle mainBundle] pathForResource:[urlString stringByDeletingPathExtension] ofType:[urlString pathExtension]];
+		if(path)
+			self.url = [NSURL fileURLWithPath:path];
+		else
+			self.url = nil;
+	}
+	return self;
 }
 
-- (void)loadView
-{
-    webView = [[UIWebView alloc] init];
-    webView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-    UIViewAutoresizingFlexibleHeight;
-    webView.delegate = self;
-    
-    self.view = webView;
-}
 
 - (void)dealloc {
-	[webView release], webView = nil;
-	[url release], url = nil;
-	
-	[super dealloc];
+	webView = nil;
+	url = nil;	
 }
 
 - (void)viewWillAppear:(BOOL)animated {  
@@ -80,7 +70,7 @@
 		if (rawURLparts.count > 2) {
 			return NO; // invalid URL
 		}
-		
+#if 0		
 		MFMailComposeViewController *mailViewController = [[MFMailComposeViewController alloc] init];
 		mailViewController.mailComposeDelegate = self;
 
@@ -102,11 +92,10 @@
 				NSString *key = [[keyValue objectAtIndex:0] lowercaseString];
 				NSString *value = [keyValue objectAtIndex:1];
 				
-				value =  (NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,
-																							 (CFStringRef)value,
+				value =  (__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,
+																							 (__bridge_retained CFStringRef)value,
 																							 CFSTR(""),
 																							 kCFStringEncodingUTF8);
-				[value autorelease];
 				
 				if ([key isEqualToString:@"subject"]) {
 					[mailViewController setSubject:value];
@@ -135,7 +124,8 @@
 		[mailViewController setToRecipients:toRecipients];
 
 		[self presentModalViewController:mailViewController animated:YES];
-		[mailViewController release];
+#endif
+
 		return NO;
 	}
 	
@@ -147,10 +137,11 @@
 	return NO;
 }
 
+#if 0
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
 	[self dismissModalViewControllerAnimated:YES];
 }
-
+#endif
 
 
 @end

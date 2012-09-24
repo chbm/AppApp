@@ -52,17 +52,6 @@
     return _settingsStore;
 }
 
-- (void)loadView
-{
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-    UIViewAutoresizingFlexibleHeight;
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    
-    self.view = _tableView;
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     if (_currentSpecifier) {
         [self setTitle:[_currentSpecifier title]];
@@ -112,12 +101,11 @@
 
 
 - (void)dealloc {
-    [_currentSpecifier release], _currentSpecifier = nil;
-	[_checkedItem release], _checkedItem = nil;
-	[_settingsReader release], _settingsReader = nil;
-    [_settingsStore release], _settingsStore = nil;
-	[_tableView release], _tableView = nil;
-    [super dealloc];
+    _currentSpecifier = nil;
+    _checkedItem = nil;
+    _settingsReader = nil;
+    _settingsStore = nil;
+    _tableView = nil;
 }
 
 
@@ -151,7 +139,7 @@
     NSArray *titles         = [_currentSpecifier multipleTitles];
 	
     if (!cell) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellValue] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellValue];
     }
 	
 	if ([indexPath isEqual:[self checkedItem]]) {
@@ -189,15 +177,10 @@
                                                                                            forKey:[_currentSpecifier key]]];
 }
 
-- (CGSize)contentSizeForViewInPopover {
-    return [[self view] sizeThatFits:CGSizeMake(320, 2000)];
-}
-
-
 #pragma mark Notifications
 
 - (void)userDefaultsDidChange {
-	NSIndexPath *oldCheckedItem = [[self.checkedItem retain] autorelease];
+	NSIndexPath *oldCheckedItem = self.checkedItem;
 	if(_currentSpecifier) {
 		[self updateCheckedItem];
 	}
